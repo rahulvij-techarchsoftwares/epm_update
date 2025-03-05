@@ -17,6 +17,7 @@ import { Projectelements } from "./pages/superadmin/Projects/Projectelements";
 import { Projectelementsbd } from "./pages/bd/Projects/Projectelementsbd";
 import { Clientelementsbd } from "./pages/bd/Clients/Clientelementsbd";
 import { AuthProvider } from "./context/AuthContext";
+import BDDashboard from "./pages/bd/BDDashboard";
 const RoleBasedRoute = ({ element, allowedRoles }) => {
   // const { user } = useAuth();
   const user = localStorage.getItem("userData");
@@ -73,6 +74,11 @@ const AppRoutes = () => {
           <Route
             path="/superadmin/projects"
             element={<RoleBasedRoute element={<Projectelements />} allowedRoles={["superadmin"]} />}
+          />
+
+          <Route
+            path="/bd/dashboard"
+            element={<RoleBasedRoute element={<BDDashboard />} allowedRoles={["billingmanager"]} />}
           />
 
           <Route

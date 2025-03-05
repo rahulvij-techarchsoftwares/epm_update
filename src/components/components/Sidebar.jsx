@@ -18,14 +18,14 @@ export function Sidebar() {
     ],
     [Roles.SUPER_ADMIN]: [
       { name: "Dashboard", path: "/superadmin/dashboard" },
-      { 
-        name: "Manage Admins", 
-        path: "/superadmin/admins",
-        children: [
-          { name: "Manage Users", path: "/superadmin/admins/users" },
-          { name: "Roles & Permissions", path: "/superadmin/admins/roles" }
-        ]
-      },
+      // { 
+      //   name: "Manage Admins", 
+      //   path: "/superadmin/admins",
+      //   children: [
+      //     { name: "Manage Users", path: "/superadmin/admins/users" },
+      //     { name: "Roles & Permissions", path: "/superadmin/admins/roles" }
+      //   ]
+      // },
       { name: "User Management", path: "/superadmin/users" },
       { name: "Team", path: "/superadmin/team" },
       { name: "Roles", path: "/superadmin/roles" },
