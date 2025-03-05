@@ -6,12 +6,10 @@ import { useAuth } from "../context/AuthContext";
 import { Roles } from "../utils/roles";
 
 export function Sidebar() {
-  const { user } = useAuth();
+
   const [openMenus, setOpenMenus] = useState({});
 
-  if (!user || !user.roles || user.roles.length === 0) return null;
-
-  const userRole = user.roles?.[0]?.name?.trim()?.toLowerCase()?.replace(/\s+/g, "") || "";
+  const userRole = localStorage.getItem("user_name");
 
   const menuItems = {
     [Roles.ADMIN]: [

@@ -39,16 +39,21 @@ export const AuthProvider = ({ children }) => {
       if (data.success) {
         const user = data.data.user;
         const token = data.data.token;
-
+        const formattedRole = user?.role?.name?.trim().toLowerCase().replace(/\s+/g, "") || "norole";
         localStorage.setItem("userToken", token);
         localStorage.setItem("user_id", user.id);
+        localStorage.setItem("user_name", formattedRole);
         localStorage.setItem("userData", JSON.stringify(user));
         setUser(user);
+        console.log(user);
+        console.log("roles", formattedRole);
+        console.log(localStorage.getItem("user_name"));
+
         setAuthMessage("Login successful! ✅");
         console.log("this is user_id",user.id);
         const userRole = user.roles?.[0]?.name?.trim()?.toLowerCase()?.replace(/\s+/g, "");
         console.log("this is user_id",userRole);
-        navigate(`/${userRole}/dashboard`);
+        navigate(`/${formattedRole}/dashboard`);
      
       } else {
         throw new Error(data.message || "Login failed ❌");

@@ -16,15 +16,17 @@ import { Employeelayout } from "./pages/superadmin/employee/Employeelayout";
 import { Projectelements } from "./pages/superadmin/Projects/Projectelements";
 import { Projectelementsbd } from "./pages/bd/Projects/Projectelementsbd";
 import { Clientelementsbd } from "./pages/bd/Clients/Clientelementsbd";
-
+import { AuthProvider } from "./context/AuthContext";
 const RoleBasedRoute = ({ element, allowedRoles }) => {
-  const { user } = useAuth();
-
+  // const { user } = useAuth();
+  const user = localStorage.getItem("userData");
+    
+  // console.log("routes", user);
   if (!user) return <Navigate to="/" />;
 
   console.log("Logged-in User:", user);
 
-  const userRole = user.roles?.[0]?.name?.trim()?.toLowerCase()?.replace(/\s+/g, "") || "";
+  const userRole = localStorage.getItem("user_name");
   console.log("Extracted Role:", userRole);
 
   const normalizedAllowedRoles = allowedRoles.map(role => role.toLowerCase().replace(/\s+/g, ""));
@@ -34,6 +36,7 @@ const RoleBasedRoute = ({ element, allowedRoles }) => {
 
 const AppRoutes = () => {
   return (
+    <AuthProvider>
     <div className="flex">
 
       <Sidebar />
@@ -104,6 +107,7 @@ const AppRoutes = () => {
         </Routes>
       </div>
     </div>
+    </AuthProvider>
   );
 };
 export default AppRoutes;
