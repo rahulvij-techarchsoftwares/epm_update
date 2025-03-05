@@ -18,6 +18,8 @@ import { Projectelementsbd } from "./pages/bd/Projects/Projectelementsbd";
 import { Clientelementsbd } from "./pages/bd/Clients/Clientelementsbd";
 import { AuthProvider } from "./context/AuthContext";
 import BDDashboard from "./pages/bd/BDDashboard";
+import { BDTeamelement } from "./pages/bd/Teams/BDTeamelement";
+import { Assignedelement } from "./pages/bd/Projects_assigned/Assignedelement";
 const RoleBasedRoute = ({ element, allowedRoles }) => {
   // const { user } = useAuth();
   const user = localStorage.getItem("userData");
@@ -77,17 +79,28 @@ const AppRoutes = () => {
           />
 
           <Route
-            path="/bd/dashboard"
+            path="/billingmanager/dashboard"
             element={<RoleBasedRoute element={<BDDashboard />} allowedRoles={["billingmanager"]} />}
           />
 
           <Route
-            path="/bd/projects"
+            path="/billingmanager/projects"
             element={<RoleBasedRoute element={<Projectelementsbd />} allowedRoles={["billingmanager"]} />}
           />
           <Route
-            path="/bd/clients"
+            path="/billingmanager/clients"
             element={<RoleBasedRoute element={<Clientelementsbd />} allowedRoles={["billingmanager"]} />}
+          />
+
+          <Route
+            path="/billingmanager/teams"
+            element={<RoleBasedRoute element={<BDTeamelement />} allowedRoles={["billingmanager"]} />}
+          />
+
+
+          <Route
+            path="/billingmanager/projects-assigned"
+            element={<RoleBasedRoute element={<Assignedelement />} allowedRoles={["billingmanager"]} />}
           />
           
               <Route

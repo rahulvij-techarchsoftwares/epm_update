@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useMemo } from "react";
 import { API_URL } from "../utils/ApiConfig";
-
+import { useNavigate } from "react-router-dom";
 const RoleContext = createContext(null);
 
 export function RoleProvider({ children }) {
@@ -9,7 +9,16 @@ export function RoleProvider({ children }) {
   const [message, setMessage] = useState(null);
   const token = localStorage.getItem("userToken");
   console.log(token);
-
+  const navigate = useNavigate();
+    const handleUnauthorized = (response) => {
+      if (response.status === 401) {
+        localStorage.removeItem("userToken");
+        navigate("/");
+        return true;
+      }
+      return false;
+    };
+  
   const addRole = async (name) => {
     setIsLoading(true);
     setMessage(null);
@@ -25,7 +34,7 @@ export function RoleProvider({ children }) {
         },
         body: JSON.stringify({ name }),
       });
-
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       console.log("API Response:", data);
 
@@ -56,6 +65,7 @@ export function RoleProvider({ children }) {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (handleUnauthorized(response)) return;
 
       const data = await response.json();
       console.log("Fetched Roles:", data);
@@ -86,7 +96,8 @@ export function RoleProvider({ children }) {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       console.log("Delete Response:", data);
 
@@ -117,7 +128,7 @@ export function RoleProvider({ children }) {
         },
         body: JSON.stringify({ name: newName }),
       });
-
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       console.log("Update Response:", data);
 

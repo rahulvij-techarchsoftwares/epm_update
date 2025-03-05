@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../utils/ApiConfig";
 
 const ClientContext = createContext();
@@ -7,8 +8,18 @@ export const ClientProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [clients, setClients] = useState([]);
+  const navigate = useNavigate();
   const token = localStorage.getItem("userToken");
-    console.log(token);
+  console.log(token);
+
+  const handleUnauthorized = (response) => {
+    if (response.status === 401) {
+      localStorage.removeItem("userToken");
+      navigate("/");
+      return true;
+    }
+    return false;
+  };
 
   const addClient = async (name, upworkId, contactDetail) => {
     setIsLoading(true);
@@ -19,7 +30,7 @@ export const ClientProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, 
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           name,
@@ -28,11 +39,13 @@ export const ClientProvider = ({ children }) => {
         }),
       });
 
+      if (handleUnauthorized(response)) return;
+
       const data = await response.json();
 
       if (response.ok) {
         setMessage("Client added successfully!");
-        fetchClients(); 
+        fetchClients();
       } else {
         setMessage(data.message);
       }
@@ -43,7 +56,6 @@ export const ClientProvider = ({ children }) => {
     }
   };
 
-
   const fetchClients = async () => {
     setIsLoading(true);
     try {
@@ -53,6 +65,9 @@ export const ClientProvider = ({ children }) => {
           "Authorization": `Bearer ${token}`,
         },
       });
+
+      if (handleUnauthorized(response)) return;
+
       const data = await response.json();
       if (response.ok) {
         setClients(data);
@@ -85,11 +100,13 @@ export const ClientProvider = ({ children }) => {
         }),
       });
 
+      if (handleUnauthorized(response)) return;
+
       const data = await response.json();
 
       if (response.ok) {
         setMessage("Client updated successfully!");
-        fetchClients(); 
+        fetchClients();
       } else {
         setMessage(data.message);
       }
@@ -112,9 +129,13 @@ export const ClientProvider = ({ children }) => {
         },
       });
 
+      if (handleUnauthorized(response)) return;
+
       if (response.ok) {
         setMessage("Client deleted successfully!");
-        setClients((prevClients) => Array.isArray(prevClients) ? prevClients.filter((client) => client.id !== id) : []);
+        setClients((prevClients) =>
+          Array.isArray(prevClients) ? prevClients.filter((client) => client.id !== id) : []
+        );
         fetchClients();
       } else {
         setMessage("Failed to delete client.");

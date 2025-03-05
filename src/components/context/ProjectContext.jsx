@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { API_URL } from "../utils/ApiConfig";
-
+import { useNavigate } from "react-router-dom";
 const ProjectContext = createContext();
 
 export const ProjectProvider = ({ children }) => {
@@ -10,6 +10,15 @@ export const ProjectProvider = ({ children }) => {
   const token = localStorage.getItem("userToken");
   const userId = localStorage.getItem("user_id");
   console.log(token);
+  const navigate = useNavigate();
+  const handleUnauthorized = (response) => {
+    if (response.status === 401) {
+      localStorage.removeItem("userToken");
+      navigate("/");
+      return true;
+    }
+    return false;
+  };
 
   const addProject = async (clientId, projectName, requirements, budget, deadline) => {
     setIsLoading(true);
@@ -36,6 +45,8 @@ export const ProjectProvider = ({ children }) => {
         },
         body: JSON.stringify(requestBody),
       });
+
+      if (handleUnauthorized(response)) return;
   
       const text = await response.text(); // Get raw response text
       console.log("Raw API Response:", text);
@@ -66,6 +77,8 @@ export const ProjectProvider = ({ children }) => {
           "Authorization": `Bearer ${token}`,
         },
       });
+
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       if (response.ok) {
         setProjects(data.data || []);
@@ -92,7 +105,7 @@ export const ProjectProvider = ({ children }) => {
         },
         body: JSON.stringify(updatedData),
       });
-
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
 
       if (response.ok) {
@@ -119,6 +132,8 @@ export const ProjectProvider = ({ children }) => {
           "Authorization": `Bearer ${token}`,
         },
       });
+
+      if (handleUnauthorized(response)) return;
 
       if (response.ok) {
         setMessage("Project deleted successfully!");

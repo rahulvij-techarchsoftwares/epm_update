@@ -20,6 +20,25 @@ const EmployeeManagement = () => {
     pm_id:1,
   });
   
+
+  const handleEditEmployee = (employee) => {
+    setEditingEmployee({ ...employee });
+  };
+
+  const handleUpdateEmployee = async () => {
+    if (!editingEmployee) return;
+
+    try {
+      await updateEmployee(editingEmployee.id, { ...editingEmployee });
+      setEditingEmployee(null);
+      setSelectedEmployee(null);
+    } catch (error) {
+      console.error("❌ Error updating employee:", error);
+    }
+  };
+
+
+
   const handleAddEmployee = async () => {
     if (
       !newEmployee.name ||
@@ -140,104 +159,66 @@ const EmployeeManagement = () => {
         </table>
       </div>
       {selectedEmployee && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-    <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
-      <button 
-        onClick={() => setSelectedEmployee(null)} 
-        className="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"
-      >
-        &times;
-      </button>
-      <h2 className="text-2xl font-semibold text-center mb-4">Employee Details</h2>
-      {selectedEmployee.profile_pic_url && (
-        <img 
-          src={selectedEmployee.profile_pic_url} 
-          alt="Profile" 
-          className="w-24 h-24 rounded-full mx-auto mb-4 border border-gray-300"
-          onError={(e) => e.target.src = 'path/to/default-image.jpg'} // fallback image
-        />
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+          <div className="relative w-full max-w-md p-6 bg-white rounded-lg">
+            <button onClick={() => setSelectedEmployee(null)} className="absolute top-4 right-4 text-gray-500 hover:text-black">
+              &times;
+            </button>
+            <h2 className="text-2xl font-semibold text-center mb-4">Employee Details</h2>
+
+            {editingEmployee ? (
+              <>
+                <input type="text" name="name" value={editingEmployee.name} onChange={(e) => setEditingEmployee({ ...editingEmployee, name: e.target.value })} className="border p-2 w-full mb-2" placeholder="Name" />
+                <input type="email" name="email" value={editingEmployee.email} onChange={(e) => setEditingEmployee({ ...editingEmployee, email: e.target.value })} className="border p-2 w-full mb-2" placeholder="Email" />
+                <input type="text" name="phone_num" value={editingEmployee.phone_num || ""} onChange={(e) => setEditingEmployee({ ...editingEmployee, phone_num: e.target.value })} className="border p-2 w-full mb-2" placeholder="Phone Number" />
+                <select 
+  name="role_id" 
+  value={editingEmployee.role_id || ""} 
+  onChange={(e) => setEditingEmployee({ ...editingEmployee, role_id: e.target.value })} 
+  className="border p-2 w-full mb-2"
+>
+  <option value="">Select Role</option>
+  {roles.map((role) => (
+    <option key={role.id} value={role.id}>{role.name}</option>
+  ))}
+</select>
+
+<select 
+  name="team_id" 
+  value={editingEmployee.team_id || ""} 
+  onChange={(e) => setEditingEmployee({ ...editingEmployee, team_id: e.target.value })} 
+  className="border p-2 w-full mb-2"
+>
+  <option value="">Select Team</option>
+  {teams.map((team) => (
+    <option key={team.id} value={team.id}>{team.name}</option>
+  ))}
+</select>
+
+                <button onClick={handleUpdateEmployee} className="bg-blue-600 text-white px-4 py-2 rounded-md w-full hover:bg-blue-700">
+                  Save Changes
+                </button>
+              </>
+            ) : (
+              <>
+                <p><strong>Name:</strong> {selectedEmployee.name}</p>
+                <p><strong>Email:</strong> {selectedEmployee.email}</p>
+                <p><strong>Phone:</strong> {selectedEmployee.phone_num || "N/A"}</p>
+                <p><strong>Emergency Phone:</strong> {selectedEmployee.emergency_phone_num || "N/A"}</p>
+                <p><strong>Role:</strong> {selectedEmployee.roles || "N/A"}</p>
+                <p><strong>Department:</strong> {selectedEmployee.team || "N/A"}</p>
+                <p><strong>address:</strong> {selectedEmployee.address || "N/A"}</p>
+                <button onClick={() => handleEditEmployee(selectedEmployee)} className="bg-green-600 text-white px-4 py-2 rounded-md w-full hover:bg-green-700 mt-4">
+                  Edit
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       )}
-      <div className="space-y-2">
-        {editingEmployee ? (
-          <>
-            <div>
-              <label htmlFor="name" className="block">Name:</label>
-              <input 
-                type="text" 
-                id="name"
-                value={editingEmployee.name}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, name: e.target.value })}
-                className="border border-gray-300 rounded-md p-2 w-full"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block">Email:</label>
-              <input 
-                type="email" 
-                id="email"
-                value={editingEmployee.email}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, email: e.target.value })}
-                className="border border-gray-300 rounded-md p-2 w-full"
-              />
-            </div>
-            <div>
-              <label htmlFor="phone" className="block">Phone:</label>
-              <input 
-                type="text" 
-                id="phone"
-                value={editingEmployee.phone_num || ""}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, phone_num: e.target.value })}
-                className="border border-gray-300 rounded-md p-2 w-full"
-              />
-            </div>
-            <div>
-              <label htmlFor="address" className="block">Address:</label>
-              <input 
-                type="text" 
-                id="address"
-                value={editingEmployee.address || ""}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, address: e.target.value })}
-                className="border border-gray-300 rounded-md p-2 w-full"
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <p><strong>Name:</strong> {selectedEmployee.name}</p>
-            <p><strong>Email:</strong> {selectedEmployee.email}</p>
-            <p><strong>Phone:</strong> {selectedEmployee.phone_num || "N/A"}</p>
-            <p><strong>Emergency Contact:</strong> {selectedEmployee.emergency_phone_num || "N/A"}</p>
-            <p><strong>Address:</strong> {selectedEmployee.address || "N/A"}</p>
-            <p><strong>Roles:</strong> {selectedEmployee.roles?.length ? selectedEmployee.roles.join(", ") : "N/A"}</p>
-          </>
-        )}
-      </div>
-      <div className="flex justify-between mt-6">
-        <button 
-          type="button" 
-          onClick={() => setSelectedEmployee(null)} 
-          className="px-4 py-2 border border-gray-600 text-gray-600 rounded-md hover:bg-gray-100"
-        >
-          Close
-        </button>
-        <button 
-          type="button" 
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          onClick={() => {
-            if (editingEmployee) {
-              updateEmployee(selectedEmployee.id, editingEmployee); // Call the update function
-              setEditingEmployee(null); // Exit editing mode after saving
-            } else {
-              setEditingEmployee(selectedEmployee); // Enter editing mode
-            }
-          }}
-        >
-          {editingEmployee ? 'Save' : 'Edit'}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+
+
+
 {isModalOpen && (
   <div className="fixed inset-0 flex z-50 items-center justify-center bg-gray-900 bg-opacity-50">
     <div className="relative w-full max-w-lg p-6 bg-white rounded-2xl shadow-xl">

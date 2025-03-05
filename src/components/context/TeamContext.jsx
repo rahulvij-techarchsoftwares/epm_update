@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useMemo } from "react";
 import { API_URL } from "../utils/ApiConfig";
-
+import { useNavigate } from "react-router-dom";
 const TeamContext = createContext(null);
 
 export function TeamProvider({ children }) {
@@ -8,6 +8,15 @@ export function TeamProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
+    const navigate = useNavigate();
+      const handleUnauthorized = (response) => {
+        if (response.status === 401) {
+          localStorage.removeItem("userToken");
+          navigate("/");
+          return true;
+        }
+        return false;
+      };
   const addTeam = async (name) => {
     setIsLoading(true);
     setMessage(null);
@@ -23,7 +32,7 @@ export function TeamProvider({ children }) {
         },
         body: JSON.stringify({ name }),
       });
-
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       console.log("API Response:", data);
 
@@ -55,7 +64,7 @@ export function TeamProvider({ children }) {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       console.log("Fetched Teams:", data);
 
@@ -85,7 +94,7 @@ export function TeamProvider({ children }) {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       console.log("Delete Response:", data);
 
@@ -116,7 +125,7 @@ export function TeamProvider({ children }) {
         },
         body: JSON.stringify({ name: newName }),
       });
-
+      if (handleUnauthorized(response)) return;
       const data = await response.json();
       console.log("Update Response:", data);
 

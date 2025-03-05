@@ -85,27 +85,53 @@ export const EmployeeProvider = ({ children }) => {
   
   
   
-  
   const updateEmployee = async (id, updatedData) => {
+    console.log("Sending updatedData:", updatedData); // Debugging  
+
     try {
-      const token = localStorage.getItem("userToken");
-      const response = await fetch(`${API_URL}/api/users/${id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update employee");
-      }
-      const updatedEmployee = await response.json();
-      setEmployees((prev) => prev.map((emp) => (emp.id === id ? updatedEmployee : emp)));
+        const token = localStorage.getItem("userToken");
+        
+        const requestBody = {
+            name: updatedData.name,
+            email: updatedData.email,
+            phone_num: updatedData.phone_num,
+            emergency_phone_num: updatedData.emergency_phone_num,
+            address: updatedData.address,
+            team_id: updatedData.team_id,
+            profile_pic: updatedData.profile_pic || null, // Ensure null if no file
+            role_id: updatedData.role_id,
+        };
+
+        console.log("Final requestBody:", requestBody); // Debugging
+
+        const response = await fetch(`${API_URL}/api/users/${id}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        fetchEmployees();
+        console.log("Response:", response);
+
+        if (!response.ok) {
+            throw new Error("Failed to update employee");
+        }
     } catch (err) {
-      setError(err.message);
+        console.error("Error:", err.message);
+        setError(err.message);
     }
-  };
+};
+
+  
+  
+  
+  
+  
+
+
+
   const deleteEmployee = async (id) => {
     try {
       const token = localStorage.getItem("userToken");
