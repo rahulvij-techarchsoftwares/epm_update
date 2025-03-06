@@ -21,7 +21,7 @@ export const Clients = () => {
     };
   
     return (
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm p-6">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm p-6 mb-3.5">
         <h2 className="text-xl font-semibold text-gray-800">Enter Client Details</h2>
         <p className="text-sm text-gray-500 mt-1">Add a new Client to the system</p>
         

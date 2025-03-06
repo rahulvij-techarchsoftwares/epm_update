@@ -22,7 +22,7 @@ export const Teamtable = () => {
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm p-6">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm p-6 mb-3.5">
       <h2 className="text-xl font-semibold text-gray-800">Team Management</h2>
       <p className="text-sm text-gray-500 mt-1">Manage teams and update details</p>
       

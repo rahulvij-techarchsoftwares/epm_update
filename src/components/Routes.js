@@ -45,7 +45,7 @@ const AppRoutes = () => {
       <Sidebar />
 
  
-      <div className="flex-1 w-full ml-72 p-6 overflow-hidden">
+      <div className="flex-1 w-full ml-72 py-2.5 px-4 overflow-hidden">
         <Routes>
           <Route
             path="/admin/dashboard"
